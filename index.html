@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop-CRM｜夥伴跟進系統｜瑞光同行</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;700&display=swap');
+
+  :root {
+    --bg: #FAF6EE;
+    --bg2: #FFFDF8;
+    --bg3: #F0E8D8;
+    --border: rgba(44,36,22,0.1);
+    --gold: #C9A84C;
+    --gold2: #A07828;
+    --gold-dim: rgba(201,168,76,0.12);
+    --text: #2C2416;
+    --text-dim: rgba(44,36,22,0.6);
+    --text-muted: rgba(44,36,22,0.38);
+    --green: #2E7D52;
+    --green-dim: rgba(46,125,82,0.1);
+    --blue: #2A5FA0;
+    --blue-dim: rgba(42,95,160,0.1);
+    --orange: #B85C1A;
+    --orange-dim: rgba(184,92,26,0.1);
+    --red: #B83232;
+    --red-dim: rgba(184,50,50,0.1);
+    --purple: #6B4FA0;
+    --purple-dim: rgba(107,79,160,0.1);
+    --radius: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-logo {
+    width: 32px;
+    height: 32px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    color: var(--gold);
+  }
+
+  .header-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .header-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .nav-switch {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+    margin-right: 8px;
+  }
+
+  .nav-tab {
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { background: var(--bg2); color: var(--gold); box-shadow: 0 1px 3px rgba(44,36,22,0.08); }
+
+  /* SYNC */
+  .sync-bar {
+    padding: 8px 24px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .sync-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .sync-dot.ok { background: var(--green); }
+  .sync-dot.err { background: var(--red); }
+  .sync-dot.loading { background: var(--gold); animation: pulse 1s infinite; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .sync-url-input {
+    flex: 1;
+    max-width: 480px;
+    padding: 4px 10px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    outline: none;
+  }
+  .sync-url-input:focus { border-color: rgba(201,168,76,0.4); }
+  .sync-url-input::placeholder { color: var(--text-muted); }
+
+  .btn-sync {
+    padding: 4px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text-dim);
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif;
+    white-space: nowrap;
+  }
+  .btn-sync:hover { border-color: var(--gold); color: var(--gold); }
+
+  .btn {
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Noto Sans TC', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+    font-weight: 500;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .btn-ghost:hover {
+    border-color: rgba(255,255,255,0.15);
+    color: var(--text);
+  }
+
+  .btn-gold { background: #1A2744; color: #FFFDF8; }
+  .btn-gold:hover { background: #2A3D6E; }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-item {
+    background: var(--bg2);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .stat-value {
+    font-size: 24px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* FILTERS */
+  .filters {
+    padding: 16px 24px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .filter-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-right: 4px;
+  }
+
+  .filter-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: var(--gold-dim);
+  }
+
+  .search-input {
+    margin-left: auto;
+    padding: 6px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'Noto Sans TC', sans-serif;
+    width: 200px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .search-input:focus {
+    border-color: rgba(201,168,76,0.4);
+  }
+
+  .search-input::placeholder { color: var(--text-muted); }
+
+  /* TABLE */
+  .table-container {
+    overflow-x: auto;
+    padding: 0 24px 24px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1100px;
+  }
+
+  thead tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+
+  tbody tr:hover {
+    background: rgba(255,255,255,0.02);
+  }
+
+  td {
+    padding: 14px 16px;
+    vertical-align: middle;
+  }
+
+  /* GRADE BADGES */
+  .grade {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .grade-A { background: var(--green-dim); color: var(--green); border: 1px solid rgba(76,175,130,0.3); }
+  .grade-B { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(91,143,212,0.3); }
+  .grade-C { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(232,145,90,0.3); }
+  .grade-D { background: rgba(255,255,255,0.03); color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* STATUS BADGES */
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .status::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+  }
+
+  .status-potential { background: var(--blue-dim); color: var(--blue); }
+  .status-potential::before { background: var(--blue); }
+  .status-inviting { background: var(--gold-dim); color: var(--gold); }
+  .status-inviting::before { background: var(--gold); }
+  .status-joined { background: var(--green-dim); color: var(--green); }
+  .status-joined::before { background: var(--green); }
+  .status-pause { background: rgba(255,255,255,0.03); color: var(--text-muted); }
+  .status-pause::before { background: var(--text-muted); }
+
+  /* NAME CELL */
+  .name-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .name-main { font-size: 14px; font-weight: 500; }
+  .name-sub { font-size: 11px; color: var(--text-muted); }
+
+  /* DATE */
+  .date-cell {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .date-urgent {
+    color: var(--red);
+  }
+
+  .date-soon {
+    color: var(--orange);
+  }
+
+  /* FOLLOWUP NOTE */
+  .note-cell {
+    max-width: 200px;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* CHANNEL TAG */
+  .channel {
+    display: inline-flex;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    background: var(--bg3);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* FOLLOWUP DAYS */
+  .days-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .days-overdue { background: var(--red-dim); color: var(--red); }
+  .days-today { background: var(--gold-dim); color: var(--gold); }
+  .days-soon { background: var(--orange-dim); color: var(--orange); }
+  .days-ok { background: var(--green-dim); color: var(--green); }
+  .days-far { color: var(--text-muted); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .modal-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--bg3);
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .modal-close:hover { background: var(--border); color: var(--text); }
+
+  .modal-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-group.full { grid-column: 1 / -1; }
+
+  .form-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'Noto Sans TC', sans-serif;
+    outline: none;
+    transition: border-color 0.15s;
+    padding: 8px 12px;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: rgba(201,168,76,0.4);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.6;
+  }
+
+  .form-select option { background: var(--bg2); }
+
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  /* FOLLOWUP GUIDE */
+  .guide-section {
+    margin: 0 24px 24px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .guide-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .guide-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gold);
+  }
+
+  .guide-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .guide-item {
+    background: var(--bg2);
+    padding: 16px 20px;
+  }
+
+  .guide-grade {
+    font-family: 'DM Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .guide-days {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .guide-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-icon { font-size: 32px; margin-bottom: 12px; }
+  .empty-text { font-size: 14px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 13px;
+    color: var(--text);
+    z-index: 300;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .toast-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  /* EXPORT NOTE */
+  .export-note {
+    margin: 0 24px 16px;
+    padding: 12px 16px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--gold2);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .stats-bar { grid-template-columns: repeat(3, 1fr); }
+    .guide-grid { grid-template-columns: repeat(2, 1fr); }
+    .header-actions .btn-ghost { display: none; }
+    .search-input { width: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-brand">
+    <div class="header-logo">瑞</div>
+    <div>
+      <div class="header-title">Shop-CRM｜夥伴跟進系統</div>
+      <div class="header-sub">SHOP-ERP 模組三｜財富全在跟進追蹤裡</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="nav-switch">
+      <a href="index.html" class="nav-tab active">夥伴招募</a>
+      <a href="base10.html" class="nav-tab">零售 Base10</a>
+    </div>
+    <button class="btn btn-ghost" onclick="exportCSV()">匯出 CSV</button>
+    <button class="btn btn-gold" onclick="openAddModal()">＋ 新增聯繫人</button>
+  </div>
+</div>
+
+<!-- SYNC BAR -->
+<div class="sync-bar">
+  <div class="sync-dot" id="sync-dot"></div>
+  <span id="sync-status">尚未連線 Google Sheets</span>
+  <input class="sync-url-input" id="sync-url" placeholder="貼上 Apps Script 網址（https://script.google.com/macros/s/…/exec）">
+  <button class="btn-sync" onclick="saveUrl()">儲存網址</button>
+  <button class="btn-sync" onclick="syncFromSheet()">↓ 從雲端載入</button>
+  <button class="btn-sync" onclick="syncToSheet()">↑ 儲存到雲端</button>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-label">總聯繫人</div>
+    <div class="stat-value" id="stat-total" style="color:var(--text)">0</div>
+    <div class="stat-sub">所有追蹤中</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">A 級熱門</div>
+    <div class="stat-value" id="stat-a" style="color:var(--green)">0</div>
+    <div class="stat-sub">7天內跟進</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">今日待跟進</div>
+    <div class="stat-value" id="stat-today" style="color:var(--gold)">0</div>
+    <div class="stat-sub">到期或逾期</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">邀約中</div>
+    <div class="stat-value" id="stat-inviting" style="color:var(--blue)">0</div>
+    <div class="stat-sub">進行中</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">已加入</div>
+    <div class="stat-value" id="stat-joined" style="color:var(--purple)">0</div>
+    <div class="stat-sub">成功夥伴</div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+  <span class="filter-label">篩選：</span>
+  <button class="filter-btn active" onclick="filterData('all', this)">全部</button>
+  <button class="filter-btn" onclick="filterData('A', this)">A級</button>
+  <button class="filter-btn" onclick="filterData('B', this)">B級</button>
+  <button class="filter-btn" onclick="filterData('C', this)">C級</button>
+  <button class="filter-btn" onclick="filterData('D', this)">D級</button>
+  <button class="filter-btn" onclick="filterData('today', this)">今日待跟進</button>
+  <button class="filter-btn" onclick="filterData('joined', this)">已加入</button>
+  <input class="search-input" type="text" placeholder="搜尋姓名或備註…" oninput="searchData(this.value)">
+</div>
+
+<!-- EXPORT NOTE -->
+<div class="export-note">
+  💡 點擊「匯出 CSV」可將資料貼入 Google Sheets 使用。所有資料儲存在本機瀏覽器，重新整理不會消失。
+</div>
+
+<!-- FOLLOWUP GUIDE -->
+<div class="guide-section">
+  <div class="guide-header">
+    <span style="color:var(--gold)">✦</span>
+    <div class="guide-title">分級跟進節奏指南</div>
+  </div>
+  <div class="guide-grid">
+    <div class="guide-item">
+      <div class="guide-grade" style="color:var(--green)">A</div>
+      <div class="guide-days">7 天內跟進</div>
+      <div class="guide-desc">主動詢問過、參加過UBP、試做反應熱烈</div>
+    </div>
+    <div class="guide-item">
+      <div class="guide-grade" style="color:var(--blue)">B</div>
+      <div class="guide-days">14 天內跟進</div>
+      <div class="guide-desc">有興趣但觀望、問過問題但未行動</div>
+    </div>
+    <div class="guide-item">
+      <div class="guide-grade" style="color:var(--orange)">C</div>
+      <div class="guide-days">30 天內跟進</div>
+      <div class="guide-desc">曾拒絕但態度友善、時機未到、長期培養</div>
+    </div>
+    <div class="guide-item">
+      <div class="guide-grade" style="color:var(--text-muted)">D</div>
+      <div class="guide-days">90 天後重評</div>
+      <div class="guide-desc">明確拒絕或無回應，暫緩接觸</div>
+    </div>
+  </div>
+</div>
+
+<!-- TABLE -->
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>級別</th>
+        <th>姓名 / 認識管道</th>
+        <th>狀態</th>
+        <th>初次接觸</th>
+        <th>上次跟進</th>
+        <th>下次跟進</th>
+        <th>距今天數</th>
+        <th>跟進內容摘要</th>
+        <th>她關心什麼</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="crm-tbody">
+    </tbody>
+  </table>
+  <div id="empty-state" class="empty-state" style="display:none">
+    <div class="empty-icon">○</div>
+    <div class="empty-text">沒有符合條件的聯繫人</div>
+  </div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">新增聯繫人</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">姓名 *</label>
+          <input class="form-input" id="f-name" placeholder="例：小美媽媽">
+        </div>
+        <div class="form-group">
+          <label class="form-label">認識管道</label>
+          <input class="form-input" id="f-channel" placeholder="例：美安活動 / Line群 / 介紹">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">分級</label>
+          <select class="form-select" id="f-grade">
+            <option value="A">A 級｜熱門（7天）</option>
+            <option value="B">B 級｜溫門（14天）</option>
+            <option value="C">C 級｜冷門（30天）</option>
+            <option value="D">D 級｜暫緩（90天）</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">目前狀態</label>
+          <select class="form-select" id="f-status">
+            <option value="potential">潛在夥伴</option>
+            <option value="inviting">邀約中</option>
+            <option value="joined">已加入</option>
+            <option value="pause">暫緩</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">初次接觸日期</label>
+          <input class="form-input" id="f-first" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">下次跟進日期</label>
+          <input class="form-input" id="f-next" type="date">
+        </div>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">她關心什麼 / 痛點</label>
+        <input class="form-input" id="f-concern" placeholder="例：孩子教育、財務自由、想多陪家人">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">跟進內容摘要</label>
+        <textarea class="form-textarea" id="f-note" placeholder="例：參加了試做，對產品有興趣，但說要跟先生商量…"></textarea>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">下次跟進方式</label>
+        <input class="form-input" id="f-method" placeholder="例：傳Line問候、邀約下週UBP、分享文章">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+      <button class="btn btn-gold" onclick="saveContact()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toast-msg">已儲存</span>
+</div>
+
+<script>
+  // ── DATA & STATE ───────────────────────────────────────
+  let contacts = JSON.parse(localStorage.getItem('crm_contacts') || '[]');
+  let editingId = null;
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  const STORAGE_URL_KEY = 'crm_gas_url';   // Apps Script URL 存在 localStorage
+
+  const avatarColors = [
+    ['#4CAF82','#1a3d2e'],['#5B8FD4','#1a2840'],['#C9A84C','#3d2e0a'],
+    ['#9B7FD4','#2a1a40'],['#E8915A','#3d2010'],['#E06B6B','#3d1010']
+  ];
+
+  function getAvatar(name, idx) {
+    const c = avatarColors[idx % avatarColors.length];
+    return `background:${c[1]};color:${c[0]};border:1px solid ${c[0]}40`;
+  }
+
+  // ── SYNC HELPERS ──────────────────────────────────────
+  function getUrl() {
+    return document.getElementById('sync-url').value.trim() ||
+           localStorage.getItem(STORAGE_URL_KEY) || '';
+  }
+
+  function setSyncState(state, msg) {
+    const dot = document.getElementById('sync-dot');
+    dot.className = 'sync-dot ' + state;
+    document.getElementById('sync-status').textContent = msg;
+  }
+
+  function saveUrl() {
+    const url = document.getElementById('sync-url').value.trim();
+    if (!url) { showToast('請先貼上 Apps Script 網址'); return; }
+    localStorage.setItem(STORAGE_URL_KEY, url);
+    showToast('網址已儲存');
+    setSyncState('ok', '網址已設定，可開始同步');
+  }
+
+  async function syncFromSheet() {
+    const url = getUrl();
+    if (!url) { showToast('請先設定 Apps Script 網址'); return; }
+    setSyncState('loading', '從 Google Sheets 載入中…');
+    try {
+      const res = await fetch(url + '?table=partners');
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error);
+      contacts = json.data;
+      localStorage.setItem('crm_contacts', JSON.stringify(contacts));
+      setSyncState('ok', `已載入 ${contacts.length} 筆，同步時間：${new Date().toLocaleTimeString()}`);
+      render();
+      showToast(`已從雲端載入 ${contacts.length} 筆資料`);
+    } catch(e) {
+      setSyncState('err', '載入失敗：' + e.message);
+      showToast('載入失敗，請確認網址正確');
+    }
+  }
+
+  async function syncToSheet() {
+    const url = getUrl();
+    if (!url) { showToast('請先設定 Apps Script 網址'); return; }
+    setSyncState('loading', '儲存到 Google Sheets 中…');
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ table: 'partners', records: contacts })
+      });
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error);
+      setSyncState('ok', `已同步 ${contacts.length} 筆，時間：${new Date().toLocaleTimeString()}`);
+      showToast(`已儲存 ${contacts.length} 筆到 Google Sheets`);
+    } catch(e) {
+      setSyncState('err', '儲存失敗：' + e.message);
+      showToast('儲存失敗，請確認網址正確');
+    }
+  }
+
+  // 儲存後自動同步（有設定網址才觸發）
+  async function autoSync() {
+    const url = getUrl();
+    if (!url) return;
+    try {
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ table: 'partners', records: contacts })
+      });
+      setSyncState('ok', `自動同步，時間：${new Date().toLocaleTimeString()}`);
+    } catch(e) {
+      setSyncState('err', '自動同步失敗');
+    }
+  }
+
+  // ── INIT SYNC UI ──────────────────────────────────────
+  (function initSyncUI() {
+    const saved = localStorage.getItem(STORAGE_URL_KEY);
+    if (saved) {
+      document.getElementById('sync-url').value = saved;
+      setSyncState('ok', '網址已設定，按「↓ 從雲端載入」取得最新資料');
+    }
+  })();
+
+  // ── RENDER ────────────────────────────────────────────
+  function render() {
+    updateStats();
+    const tbody = document.getElementById('crm-tbody');
+    let data = contacts;
+
+    if (currentFilter === 'today') {
+      const today = todayStr();
+      data = data.filter(c => c.next <= today && c.next);
+    } else if (currentFilter === 'joined') {
+      data = data.filter(c => c.status === 'joined');
+    } else if (['A','B','C','D'].includes(currentFilter)) {
+      data = data.filter(c => c.grade === currentFilter);
+    }
+
+    if (currentSearch) {
+      const s = currentSearch.toLowerCase();
+      data = data.filter(c =>
+        c.name.toLowerCase().includes(s) ||
+        (c.note||'').toLowerCase().includes(s) ||
+        (c.concern||'').toLowerCase().includes(s)
+      );
+    }
+
+    data.sort((a,b) => {
+      if (!a.next && !b.next) return 0;
+      if (!a.next) return 1;
+      if (!b.next) return -1;
+      return a.next.localeCompare(b.next);
+    });
+
+    if (data.length === 0) {
+      tbody.innerHTML = '';
+      document.getElementById('empty-state').style.display = 'block';
+      return;
+    }
+    document.getElementById('empty-state').style.display = 'none';
+
+    tbody.innerHTML = data.map((c, i) => {
+      const origIdx = contacts.findIndex(x => x.id === c.id);
+      const daysInfo = getDaysInfo(c.next);
+      const statusInfo = getStatusInfo(c.status);
+      return `
+        <tr onclick="openEditModal('${c.id}')">
+          <td><span class="grade grade-${c.grade}">${c.grade}</span></td>
+          <td>
+            <div class="name-cell">
+              <div class="avatar" style="${getAvatar(c.name, origIdx)}">${c.name[0]}</div>
+              <div>
+                <div class="name-main">${c.name}</div>
+                <div class="name-sub"><span class="channel">${c.channel||'—'}</span></div>
+              </div>
+            </div>
+          </td>
+          <td><span class="status status-${c.status}">${statusInfo}</span></td>
+          <td><span class="date-cell">${formatDate(c.first)||'—'}</span></td>
+          <td><span class="date-cell">${formatDate(c.last)||'—'}</span></td>
+          <td><span class="date-cell ${daysInfo.cls}">${formatDate(c.next)||'—'}</span></td>
+          <td><span class="days-badge ${daysInfo.badgeCls}">${daysInfo.label}</span></td>
+          <td><div class="note-cell">${c.note||'—'}</div></td>
+          <td><div class="note-cell">${c.concern||'—'}</div></td>
+          <td>
+            <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px"
+              onclick="event.stopPropagation();deleteContact('${c.id}')">刪除</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function updateStats() {
+    const today = todayStr();
+    document.getElementById('stat-total').textContent = contacts.length;
+    document.getElementById('stat-a').textContent = contacts.filter(c=>c.grade==='A').length;
+    document.getElementById('stat-today').textContent = contacts.filter(c=>c.next&&c.next<=today).length;
+    document.getElementById('stat-inviting').textContent = contacts.filter(c=>c.status==='inviting').length;
+    document.getElementById('stat-joined').textContent = contacts.filter(c=>c.status==='joined').length;
+  }
+
+  function getDaysInfo(next) {
+    if (!next) return {label:'—',cls:'',badgeCls:'days-far'};
+    const today = todayStr();
+    const diff = Math.ceil((new Date(next)-new Date(today))/(1000*60*60*24));
+    if (diff < 0) return {label:`逾期 ${Math.abs(diff)}天`,cls:'date-urgent',badgeCls:'days-overdue'};
+    if (diff === 0) return {label:'今天',cls:'date-urgent',badgeCls:'days-today'};
+    if (diff <= 3) return {label:`${diff}天後`,cls:'date-soon',badgeCls:'days-soon'};
+    if (diff <= 14) return {label:`${diff}天後`,cls:'',badgeCls:'days-ok'};
+    return {label:`${diff}天後`,cls:'',badgeCls:'days-far'};
+  }
+
+  function getStatusInfo(s) {
+    return {potential:'潛在夥伴',inviting:'邀約中',joined:'已加入',pause:'暫緩'}[s]||s;
+  }
+
+  function formatDate(d) {
+    if (!d) return '';
+    const [y,m,day] = d.split('-');
+    return `${m}/${day}`;
+  }
+
+  function todayStr() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  // ── MODAL ─────────────────────────────────────────────
+  function openAddModal() {
+    editingId = null;
+    document.getElementById('modal-title').textContent = '新增聯繫人';
+    document.getElementById('edit-id').value = '';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-channel').value = '';
+    document.getElementById('f-grade').value = 'B';
+    document.getElementById('f-status').value = 'potential';
+    document.getElementById('f-first').value = todayStr();
+    document.getElementById('f-next').value = '';
+    document.getElementById('f-concern').value = '';
+    document.getElementById('f-note').value = '';
+    document.getElementById('f-method').value = '';
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function openEditModal(id) {
+    const c = contacts.find(x=>x.id===id);
+    if (!c) return;
+    editingId = id;
+    document.getElementById('modal-title').textContent = '編輯聯繫人';
+    document.getElementById('f-name').value = c.name||'';
+    document.getElementById('f-channel').value = c.channel||'';
+    document.getElementById('f-grade').value = c.grade||'B';
+    document.getElementById('f-status').value = c.status||'potential';
+    document.getElementById('f-first').value = c.first||'';
+    document.getElementById('f-next').value = c.next||'';
+    document.getElementById('f-concern').value = c.concern||'';
+    document.getElementById('f-note').value = c.note||'';
+    document.getElementById('f-method').value = c.method||'';
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+  }
+
+  function saveContact() {
+    const name = document.getElementById('f-name').value.trim();
+    if (!name) { showToast('請填入姓名'); return; }
+
+    const data = {
+      id: editingId || Date.now().toString(),
+      name,
+      channel: document.getElementById('f-channel').value.trim(),
+      grade: document.getElementById('f-grade').value,
+      status: document.getElementById('f-status').value,
+      first: document.getElementById('f-first').value,
+      last: editingId ? (contacts.find(x=>x.id===editingId)?.last||'') : todayStr(),
+      next: document.getElementById('f-next').value,
+      concern: document.getElementById('f-concern').value.trim(),
+      note: document.getElementById('f-note').value.trim(),
+      method: document.getElementById('f-method').value.trim(),
+      updated: todayStr()
+    };
+
+    if (editingId) {
+      data.last = todayStr();
+      const idx = contacts.findIndex(x=>x.id===editingId);
+      contacts[idx] = data;
+      showToast('已更新聯繫人');
+    } else {
+      contacts.unshift(data);
+      showToast('已新增聯繫人');
+    }
+
+    localStorage.setItem('crm_contacts', JSON.stringify(contacts));
+    closeModal();
+    render();
+    autoSync();
+  }
+
+  function deleteContact(id) {
+    if (!confirm('確定要刪除這筆資料嗎？')) return;
+    contacts = contacts.filter(x=>x.id!==id);
+    localStorage.setItem('crm_contacts', JSON.stringify(contacts));
+    showToast('已刪除');
+    render();
+    autoSync();
+  }
+
+  // ── FILTER / SEARCH ───────────────────────────────────
+  function filterData(type, btn) {
+    currentFilter = type;
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  }
+
+  function searchData(val) {
+    currentSearch = val;
+    render();
+  }
+
+  // ── EXPORT CSV ────────────────────────────────────────
+  function exportCSV() {
+    const headers = ['姓名','認識管道','分級','狀態','初次接觸','上次跟進','下次跟進','跟進內容','她關心什麼','下次方式'];
+    const rows = contacts.map(c => [
+      c.name, c.channel, c.grade, getStatusInfo(c.status),
+      c.first, c.last, c.next, c.note, c.concern, c.method
+    ].map(v => `"${(v||'').replace(/"/g,'""')}"`).join(','));
+
+    const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `美安CRM_${todayStr()}.csv`;
+    a.click();
+    showToast('CSV 已匯出，可貼入 Google Sheets');
+  }
+
+  // ── TOAST ─────────────────────────────────────────────
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ── INIT ──────────────────────────────────────────────
+  if (contacts.length === 0) {
+    contacts = [
+      {
+        id:'demo1', name:'小美媽媽', channel:'美安試做活動',
+        grade:'A', status:'inviting',
+        first:'2026-05-10', last:'2026-05-18', next:'2026-05-23',
+        concern:'想多陪孩子、財務自由', note:'參加試做反應很好，說要跟先生討論',
+        method:'明天傳Line問進度', updated:'2026-05-18'
+      },
+      {
+        id:'demo2', name:'雅婷', channel:'Line群介紹',
+        grade:'B', status:'potential',
+        first:'2026-05-05', last:'2026-05-12', next:'2026-05-26',
+        concern:'希望有副收入', note:'問過很多產品問題，還在觀望',
+        method:'分享Medium文章', updated:'2026-05-12'
+      },
+      {
+        id:'demo3', name:'淑芬姊', channel:'美安UBP',
+        grade:'A', status:'joined',
+        first:'2026-04-20', last:'2026-05-15', next:'2026-05-30',
+        concern:'建立被動收入', note:'已正式加入，協助她完成EC設定',
+        method:'確認第一單試做安排', updated:'2026-05-15'
+      },
+      {
+        id:'demo4', name:'佳玲', channel:'Facebook',
+        grade:'C', status:'potential',
+        first:'2026-04-01', last:'2026-04-20', next:'2026-06-01',
+        concern:'時間不夠', note:'說現在很忙，叫我之後再聯絡',
+        method:'30天後重新問候', updated:'2026-04-20'
+      }
+    ];
+    localStorage.setItem('crm_contacts', JSON.stringify(contacts));
+  }
+
+  render();
+</script>
+</body>
+</html>
