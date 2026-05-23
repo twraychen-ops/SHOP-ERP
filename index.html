@@ -951,13 +951,11 @@
     if (!url) { showToast('請先設定 Apps Script 網址'); return; }
     setSyncState('loading', '儲存到 Google Sheets 中…');
     try {
-      const res = await fetch(url, {
+      await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
         body: JSON.stringify({ table: 'partners', records: contacts })
       });
-      const json = await res.json();
-      if (!json.ok) throw new Error(json.error);
       setSyncState('ok', `已同步 ${contacts.length} 筆，時間：${new Date().toLocaleTimeString()}`);
       showToast(`已儲存 ${contacts.length} 筆到 Google Sheets`);
     } catch(e) {
@@ -966,14 +964,13 @@
     }
   }
 
-  // 儲存後自動同步（有設定網址才觸發）
   async function autoSync() {
     const url = getUrl();
     if (!url) return;
     try {
       await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
         body: JSON.stringify({ table: 'partners', records: contacts })
       });
       setSyncState('ok', `自動同步，時間：${new Date().toLocaleTimeString()}`);
